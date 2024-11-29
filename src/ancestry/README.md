@@ -1,46 +1,24 @@
-# Ancestry.com MCP Server
+# FamilySearch Ancestry MCP Server
 
-MCP Server for the Ancestry.com API.
+MCP Server implementation for the FamilySearch Ancestry API endpoint.
 
 ## Tools
 
-1. `search_records`
-   - Search historical records
+1. `familysearch_get_ancestry`
+   - Get a person's ancestors and descendants from FamilySearch Family Tree
    - Inputs:
-     - `query` (string): Search terms
-     - `collection` (optional string): Specific collection ID
-     - `filters` (optional object): Additional search filters
-
-2. `get_record`
-   - Get detailed information about a specific record
-   - Input: `record_id` (string)
-
-3. `search_trees`
-   - Search family trees
-   - Inputs:
-     - `query` (string): Search terms
-     - `owner` (optional string): Tree owner username
-
-4. `get_tree_details`
-   - Get detailed information about a family tree
-   - Input: `tree_id` (string)
-
-5. `get_person`
-   - Get information about a person in a family tree
-   - Inputs:
-     - `tree_id` (string)
-     - `person_id` (string)
-
-6. `search_dna_matches`
-   - Search DNA matches
-   - Inputs:
-     - `test_id` (string)
-     - `filters` (optional object): Match filters
+     - `person` (required): ID of the person to get ancestry for
+     - `spouse` (optional): ID of the person's spouse
+     - `personDetails` (optional): Whether to include detailed person information (default: true)
+     - `generations` (optional): Number of generations to return (default: 4)
+   - Returns: Detailed ancestry information including:
+     - Person details (name, gender, lifespan, birth/death info)
+     - Relationship connections (ancestry/descendancy)
 
 ## Setup
 
-### API Key
-Get an Ancestry.com API key by signing up for API access at their developer portal.
+### API Authentication
+Get a FamilySearch API key by registering at https://www.familysearch.org/developers/
 
 ### Usage with Claude Desktop
 
@@ -49,20 +27,24 @@ Add the following to your `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "ancestry": {
+    "familysearch-ancestry": {
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-ancestry"
+        "@modelcontextprotocol/server-familysearch-ancestry"
       ],
       "env": {
-        "ANCESTRY_API_KEY": "<YOUR_API_KEY>",
-        "ANCESTRY_API_SECRET": "<YOUR_API_SECRET>"
+        "FAMILYSEARCH_API_KEY": "<YOUR_API_KEY>"
       }
     }
   }
 }
 ```
+
+## API Documentation
+
+This implementation is based on the FamilySearch Ancestry API endpoint:
+https://www.familysearch.org/developers/docs/api/tree/Ancestry_resource
 
 ## License
 
