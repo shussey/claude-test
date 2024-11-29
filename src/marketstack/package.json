@@ -1,7 +1,7 @@
 {
   "name": "@modelcontextprotocol/server-marketstack",
   "version": "0.1.0",
-  "description": "MCP Server for MarketStack API",
+  "description": "MCP Server for Marketstack API",
   "main": "index.js",
   "type": "module",
   "scripts": {

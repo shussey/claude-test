@@ -1,47 +1,42 @@
-# MarketStack MCP Server
+# Marketstack MCP Server
 
-MCP Server implementation for the MarketStack API, providing access to real-time and historical stock market data.
+MCP Server implementation for the Marketstack API, providing access to real-time and historical stock market data.
 
 ## Tools
 
 1. `marketstack_eod`
-   - Get end-of-day stock prices
+   - Get End-of-Day (EOD) stock data
    - Inputs:
-     - `symbols` (required): Stock symbol(s) to fetch (e.g., "AAPL" or ["AAPL", "MSFT"])
+     - `symbol` (required): Stock symbol (e.g., "AAPL")
      - `date_from` (optional): Start date (YYYY-MM-DD)
      - `date_to` (optional): End date (YYYY-MM-DD)
-     - `limit` (optional): Number of results per page (1-1000, default 100)
-     - `offset` (optional): Pagination offset
+     - `limit` (optional): Number of results per page (default: 100)
 
 2. `marketstack_intraday`
-   - Get intraday stock prices
+   - Get intraday stock data with intervals
    - Inputs:
-     - `symbols` (required): Stock symbol(s) to fetch
+     - `symbol` (required): Stock symbol
+     - `date_from` (optional): Start date and time
+     - `date_to` (optional): End date and time
      - `interval` (optional): Time interval (1min, 5min, 15min, 30min, 1hour, 3hour, 6hour, 12hour, 24hour)
-     - `date_from` (optional): Start date
-     - `date_to` (optional): End date
-     - `limit` (optional): Results per page
-     - `offset` (optional): Pagination offset
+     - `limit` (optional): Number of results per page
 
 3. `marketstack_tickers`
-   - Search for stock symbols and company information
+   - Get stock ticker information
    - Inputs:
-     - `search` (optional): Search term
-     - `exchange` (optional): Filter by exchange
-     - `limit` (optional): Results per page
-     - `offset` (optional): Pagination offset
+     - `symbols` (required): Stock symbols (comma-separated)
+     - `exchange` (optional): Exchange code (e.g., "XNAS")
 
 4. `marketstack_exchanges`
-   - Get stock exchange information
+   - Get information about supported stock exchanges
    - Inputs:
-     - `search` (optional): Search term
-     - `limit` (optional): Results per page
-     - `offset` (optional): Pagination offset
+     - `search` (optional): Search exchanges by name
+     - `limit` (optional): Number of results per page
 
 ## Setup
 
 ### API Authentication
-Get a MarketStack API key by signing up at https://marketstack.com/signup
+Get a Marketstack API key by signing up at https://marketstack.com/signup
 
 ### Usage with Claude Desktop
 
@@ -66,7 +61,7 @@ Add the following to your `claude_desktop_config.json`:
 
 ## API Documentation
 
-This implementation is based on the MarketStack API:
+This implementation is based on the Marketstack API:
 https://marketstack.com/documentation
 
 ## License
