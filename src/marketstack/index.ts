@@ -10,82 +10,37 @@ import {
 import fetch from "node-fetch";
 
 // Response interfaces
-interface MarketStackResponse {
-  pagination: {
+interface MarketstackResponse {
+  pagination?: {
     limit: number;
     offset: number;
     count: number;
     total: number;
   };
-}
-
-interface StockData {
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-  adj_high?: number;
-  adj_low?: number;
-  adj_close?: number;
-  adj_open?: number;
-  adj_volume?: number;
-  split_factor?: number;
-  dividend?: number;
-  symbol: string;
-  exchange: string;
-  date: string;
-}
-
-interface EODResponse extends MarketStackResponse {
-  data: StockData[];
-}
-
-interface IntradayResponse extends MarketStackResponse {
-  data: StockData[];
-}
-
-interface Ticker {
-  name: string;
-  symbol: string;
-  stock_exchange: {
-    acronym: string;
-    name: string;
-    country: string;
-    country_code: string;
-    city: string;
-    website: string;
-  };
-  has_intraday: boolean;
-  has_eod: boolean;
-}
-
-interface TickersResponse extends MarketStackResponse {
-  data: Ticker[];
-}
-
-interface Exchange {
-  name: string;
-  acronym: string;
-  mic: string;
-  country: string;
-  country_code: string;
-  city: string;
-  website: string;
-  timezone: {
-    timezone: string;
-    abbr: string;
-    abbr_dst: string;
-  };
-  currency: {
+  error?: {
     code: string;
-    symbol: string;
-    name: string;
+    message: string;
   };
 }
 
-interface ExchangesResponse extends MarketStackResponse {
-  data: Exchange[];
+interface EodResponse extends MarketstackResponse {
+  data: Array<{
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    volume: number;
+    adj_high: number;
+    adj_low: number;
+    adj_close: number;
+    adj_open: number;
+    adj_volume: number;
+    split_factor: number;
+    dividend: number;
+    symbol: string;
+    exchange: string;
+    date: string;
+  }>;
 }
 
 function getApiKey(): string {
@@ -99,19 +54,16 @@ function getApiKey(): string {
   return apiKey;
 }
 
-// Tool definitions
+// Tool definition
 const EOD_TOOL: Tool = {
   name: "marketstack_eod",
-  description: "Get end-of-day stock data",
+  description: "Get End-of-Day (EOD) stock data",
   inputSchema: {
     type: "object",
     properties: {
-      symbols: {
-        oneOf: [
-          { type: "string" },
-          { type: "array", items: { type: "string" } }
-        ],
-        description: "Stock symbol(s) to fetch data for"
+      symbol: { 
+        type: "string", 
+        description: "Stock symbol (e.g., 'AAPL')" 
       },
       date_from: {
         type: "string",
@@ -123,119 +75,134 @@ const EOD_TOOL: Tool = {
       },
       limit: {
         type: "number",
-        description: "Number of results per page (1-1000)",
-        minimum: 1,
-        maximum: 1000
-      },
-      offset: {
-        type: "number",
-        description: "Pagination offset",
-        minimum: 0
+        description: "Number of results per page",
+        default: 100
       }
     },
-    required: ["symbols"]
-  }
-};
-
-const INTRADAY_TOOL: Tool = {
-  name: "marketstack_intraday",
-  description: "Get intraday stock data",
-  inputSchema: {
-    type: "object",
-    properties: {
-      symbols: {
-        oneOf: [
-          { type: "string" },
-          { type: "array", items: { type: "string" } }
-        ],
-        description: "Stock symbol(s) to fetch data for"
-      },
-      interval: {
-        type: "string",
-        enum: ["1min", "5min", "15min", "30min", "1hour", "3hour", "6hour", "12hour", "24hour"],
-        description: "Time interval between data points"
-      },
-      date_from: {
-        type: "string",
-        description: "Start date (YYYY-MM-DD)"
-      },
-      date_to: {
-        type: "string",
-        description: "End date (YYYY-MM-DD)"
-      },
-      limit: {
-        type: "number",
-        description: "Number of results per page (1-1000)",
-        minimum: 1,
-        maximum: 1000
-      },
-      offset: {
-        type: "number",
-        description: "Pagination offset",
-        minimum: 0
-      }
-    },
-    required: ["symbols"]
-  }
-};
-
-const TICKERS_TOOL: Tool = {
-  name: "marketstack_tickers",
-  description: "Search for stock symbols and company information",
-  inputSchema: {
-    type: "object",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search term"
-      },
-      exchange: {
-        type: "string",
-        description: "Filter by exchange (e.g., 'XNAS' for NASDAQ)"
-      },
-      limit: {
-        type: "number",
-        description: "Number of results per page (1-1000)",
-        minimum: 1,
-        maximum: 1000
-      },
-      offset: {
-        type: "number",
-        description: "Pagination offset",
-        minimum: 0
-      }
-    }
-  }
-};
-
-const EXCHANGES_TOOL: Tool = {
-  name: "marketstack_exchanges",
-  description: "Get stock exchange information",
-  inputSchema: {
-    type: "object",
-    properties: {
-      search: {
-        type: "string",
-        description: "Search term"
-      },
-      limit: {
-        type: "number",
-        description: "Number of results per page (1-1000)",
-        minimum: 1,
-        maximum: 1000
-      },
-      offset: {
-        type: "number",
-        description: "Pagination offset",
-        minimum: 0
-      }
-    }
+    required: ["symbol"]
   }
 };
 
 const MARKETSTACK_TOOLS = [
   EOD_TOOL,
-  INTRADAY_TOOL,
-  TICKERS_TOOL,
-  EXCHANGES_TOOL,
 ] as const;
+
+// API handler
+async function handleEod(
+  symbol: string,
+  dateFrom?: string,
+  dateTo?: string,
+  limit: number = 100
+) {
+  const apiKey = getApiKey();
+  const url = new URL("http://api.marketstack.com/v1/eod");
+  
+  url.searchParams.append("access_key", apiKey);
+  url.searchParams.append("symbols", symbol);
+  if (dateFrom) url.searchParams.append("date_from", dateFrom);
+  if (dateTo) url.searchParams.append("date_to", dateTo);
+  if (limit) url.searchParams.append("limit", limit.toString());
+
+  try {
+    const response = await fetch(url.toString());
+    const data = await response.json() as EodResponse;
+
+    if (data.error) {
+      return {
+        toolResult: {
+          content: [{
+            type: "text",
+            text: `API request failed: ${data.error.message}`
+          }],
+          isError: true
+        }
+      };
+    }
+
+    return {
+      toolResult: {
+        content: [{
+          type: "text",
+          text: JSON.stringify(data, null, 2)
+        }],
+        isError: false
+      }
+    };
+  } catch (error) {
+    return {
+      toolResult: {
+        content: [{
+          type: "text",
+          text: `API request failed: ${error instanceof Error ? error.message : String(error)}`
+        }],
+        isError: true
+      }
+    };
+  }
+}
+
+// Server setup
+const server = new Server(
+  {
+    name: "mcp-server/marketstack",
+    version: "0.1.0",
+  },
+  {
+    capabilities: {
+      tools: {},
+    },
+  },
+);
+
+// Set up request handlers
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: MARKETSTACK_TOOLS,
+}));
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  try {
+    switch (request.params.name) {
+      case "marketstack_eod": {
+        const { symbol, date_from, date_to, limit } = request.params.arguments as {
+          symbol: string;
+          date_from?: string;
+          date_to?: string;
+          limit?: number;
+        };
+        return await handleEod(symbol, date_from, date_to, limit);
+      }
+      
+      default:
+        return {
+          toolResult: {
+            content: [{
+              type: "text",
+              text: `Unknown tool: ${request.params.name}`
+            }],
+            isError: true
+          }
+        };
+    }
+  } catch (error) {
+    return {
+      toolResult: {
+        content: [{
+          type: "text",
+          text: `Error: ${error instanceof Error ? error.message : String(error)}`
+        }],
+        isError: true
+      }
+    };
+  }
+});
+
+async function runServer() {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  console.error("Marketstack EOD MCP Server running on stdio");
+}
+
+runServer().catch((error) => {
+  console.error("Fatal error running server:", error);
+  process.exit(1);
+});
