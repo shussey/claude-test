@@ -10,363 +10,129 @@ import {
 import fetch from "node-fetch";
 
 // Response interfaces
-interface AncestryResponse {
-  success: boolean;
-  error?: string;
-}
-
-interface RecordSearchResponse extends AncestryResponse {
-  records: Array<{
-    id: string;
-    title: string;
-    category: string;
-    year: number;
-    location: string;
-    summary: string;
-  }>;
-  total: number;
-}
-
-interface RecordDetailsResponse extends AncestryResponse {
-  record: {
-    id: string;
-    title: string;
-    category: string;
-    year: number;
-    location: string;
-    content: string;
-    sources: string[];
-    images: string[];
-  };
-}
-
-interface FamilyTreeSearchResponse extends AncestryResponse {
-  results: Array<{
-    tree_id: string;
-    person_id: string;
-    name: string;
-    birth_year?: number;
-    death_year?: number;
-    location?: string;
-    tree_name: string;
-    owner: string;
+interface FamilySearchResponse {
+  status?: number;
+  statusText?: string;
+  errors?: Array<{
+    code: number;
+    message: string;
   }>;
 }
 
-interface PersonDetailsResponse extends AncestryResponse {
-  person: {
+interface AncestryResponse extends FamilySearchResponse {
+  persons: Array<{
     id: string;
-    name: string;
-    birth: {
-      date?: string;
-      place?: string;
+    display: {
+      name: string;
+      gender: string;
+      lifespan: string;
+      birthDate: string;
+      birthPlace: string;
+      deathDate: string;
+      deathPlace: string;
     };
-    death?: {
-      date?: string;
-      place?: string;
+  }>;
+  relationships: Array<{
+    type: "ancestry" | "descendancy";
+    person1: {
+      resourceId: string;
+      resource: string;
     };
-    parents: Array<{
-      id: string;
-      name: string;
-    }>;
-    spouses: Array<{
-      id: string;
-      name: string;
-      marriage?: {
-        date?: string;
-        place?: string;
-      };
-    }>;
-    children: Array<{
-      id: string;
-      name: string;
-    }>;
-  };
+    person2: {
+      resourceId: string;
+      resource: string;
+    };
+  }>;
 }
 
-function getApiCredentials(): { key: string; secret: string } {
-  const key = process.env.ANCESTRY_API_KEY;
-  const secret = process.env.ANCESTRY_API_SECRET;
+function getApiKey(): string {
+  const apiKey = process.env.FAMILYSEARCH_API_KEY;
   
-  if (!key || !secret) {
-    console.error("ANCESTRY_API_KEY and ANCESTRY_API_SECRET environment variables must be set");
+  if (!apiKey) {
+    console.error("FAMILYSEARCH_API_KEY environment variable must be set");
     process.exit(1);
   }
   
-  return { key, secret };
+  return apiKey;
 }
 
-// Tool definitions
-const SEARCH_RECORDS_TOOL: Tool = {
-  name: "ancestry_search_records",
-  description: "Search historical records on Ancestry.com",
+// Tool definition
+const GET_ANCESTRY_TOOL: Tool = {
+  name: "familysearch_get_ancestry",
+  description: "Get a person's ancestors and descendants from FamilySearch Family Tree",
   inputSchema: {
     type: "object",
     properties: {
-      query: { 
+      person: { 
         type: "string", 
-        description: "Search terms" 
+        description: "ID of the person to get ancestry for" 
       },
-      category: {
+      spouse: {
         type: "string",
-        description: "Record category"
+        description: "Optional ID of the person's spouse"
       },
-      year: {
+      personDetails: {
+        type: "boolean",
+        description: "Whether to include detailed person information",
+        default: true
+      },
+      generations: {
         type: "number",
-        description: "Year of record"
-      },
-      location: {
-        type: "string",
-        description: "Location of record"
+        description: "Number of generations to return",
+        default: 4
       }
     },
-    required: ["query"]
+    required: ["person"]
   }
 };
 
-const GET_RECORD_DETAILS_TOOL: Tool = {
-  name: "ancestry_get_record_details",
-  description: "Get detailed information about a specific record",
-  inputSchema: {
-    type: "object",
-    properties: {
-      record_id: {
-        type: "string",
-        description: "The ID of the record to retrieve"
-      }
-    },
-    required: ["record_id"]
-  }
-};
-
-const SEARCH_FAMILY_TREES_TOOL: Tool = {
-  name: "ancestry_search_family_trees",
-  description: "Search public family trees on Ancestry.com",
-  inputSchema: {
-    type: "object",
-    properties: {
-      name: {
-        type: "string",
-        description: "Person's name to search for"
-      },
-      birth_year: {
-        type: "number",
-        description: "Year of birth"
-      },
-      death_year: {
-        type: "number",
-        description: "Year of death"
-      },
-      location: {
-        type: "string",
-        description: "Location"
-      }
-    },
-    required: ["name"]
-  }
-};
-
-const GET_PERSON_DETAILS_TOOL: Tool = {
-  name: "ancestry_get_person_details",
-  description: "Get detailed information about a person",
-  inputSchema: {
-    type: "object",
-    properties: {
-      person_id: {
-        type: "string",
-        description: "The ID of the person to retrieve"
-      }
-    },
-    required: ["person_id"]
-  }
-};
-
-const ANCESTRY_TOOLS = [
-  SEARCH_RECORDS_TOOL,
-  GET_RECORD_DETAILS_TOOL,
-  SEARCH_FAMILY_TREES_TOOL,
-  GET_PERSON_DETAILS_TOOL,
+const FAMILYSEARCH_TOOLS = [
+  GET_ANCESTRY_TOOL,
 ] as const;
 
-// API handlers
-async function handleSearchRecords(
-  query: string,
-  category?: string,
-  year?: number,
-  location?: string
+// API handler
+async function handleGetAncestry(
+  personId: string,
+  spouseId?: string,
+  personDetails: boolean = true,
+  generations: number = 4
 ) {
-  const credentials = getApiCredentials();
-  const url = new URL("https://api.ancestry.com/v2/records/search");
-  url.searchParams.append("q", query);
-  if (category) url.searchParams.append("category", category);
-  if (year) url.searchParams.append("year", year.toString());
-  if (location) url.searchParams.append("location", location);
+  const apiKey = getApiKey();
+  const url = new URL("https://api.familysearch.org/platform/tree/ancestry");
+  
+  url.searchParams.append("person", personId);
+  if (spouseId) url.searchParams.append("spouse", spouseId);
+  if (personDetails) url.searchParams.append("personDetails", "true");
+  if (generations) url.searchParams.append("generations", generations.toString());
 
   try {
     const response = await fetch(url.toString(), {
       headers: {
-        "Authorization": `Bearer ${credentials.key}`,
-        "Content-Type": "application/json"
+        "Authorization": `Bearer ${apiKey}`,
+        "Accept": "application/x-fs-v1+json"
       }
     });
-    const data = await response.json() as RecordSearchResponse;
 
-    if (!data.success) {
+    if (!response.ok) {
       return {
         toolResult: {
           content: [{
             type: "text",
-            text: `Search failed: ${data.error || 'Unknown error'}`
+            text: `API request failed: ${response.status} ${response.statusText}`
           }],
           isError: true
         }
       };
     }
 
-    return {
-      toolResult: {
-        content: [{
-          type: "text",
-          text: JSON.stringify(data, null, 2)
-        }],
-        isError: false
-      }
-    };
-  } catch (error) {
-    return {
-      toolResult: {
-        content: [{
-          type: "text",
-          text: `API request failed: ${error instanceof Error ? error.message : String(error)}`
-        }],
-        isError: true
-      }
-    };
-  }
-}
+    const data = await response.json() as AncestryResponse;
 
-async function handleGetRecordDetails(recordId: string) {
-  const credentials = getApiCredentials();
-  const url = new URL(`https://api.ancestry.com/v2/records/${recordId}`);
-
-  try {
-    const response = await fetch(url.toString(), {
-      headers: {
-        "Authorization": `Bearer ${credentials.key}`,
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await response.json() as RecordDetailsResponse;
-
-    if (!data.success) {
+    if (data.errors) {
       return {
         toolResult: {
           content: [{
             type: "text",
-            text: `Failed to get record details: ${data.error || 'Unknown error'}`
-          }],
-          isError: true
-        }
-      };
-    }
-
-    return {
-      toolResult: {
-        content: [{
-          type: "text",
-          text: JSON.stringify(data, null, 2)
-        }],
-        isError: false
-      }
-    };
-  } catch (error) {
-    return {
-      toolResult: {
-        content: [{
-          type: "text",
-          text: `API request failed: ${error instanceof Error ? error.message : String(error)}`
-        }],
-        isError: true
-      }
-    };
-  }
-}
-
-async function handleSearchFamilyTrees(
-  name: string,
-  birthYear?: number,
-  deathYear?: number,
-  location?: string
-) {
-  const credentials = getApiCredentials();
-  const url = new URL("https://api.ancestry.com/v2/trees/search");
-  url.searchParams.append("name", name);
-  if (birthYear) url.searchParams.append("birth_year", birthYear.toString());
-  if (deathYear) url.searchParams.append("death_year", deathYear.toString());
-  if (location) url.searchParams.append("location", location);
-
-  try {
-    const response = await fetch(url.toString(), {
-      headers: {
-        "Authorization": `Bearer ${credentials.key}`,
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await response.json() as FamilyTreeSearchResponse;
-
-    if (!data.success) {
-      return {
-        toolResult: {
-          content: [{
-            type: "text",
-            text: `Search failed: ${data.error || 'Unknown error'}`
-          }],
-          isError: true
-        }
-      };
-    }
-
-    return {
-      toolResult: {
-        content: [{
-          type: "text",
-          text: JSON.stringify(data, null, 2)
-        }],
-        isError: false
-      }
-    };
-  } catch (error) {
-    return {
-      toolResult: {
-        content: [{
-          type: "text",
-          text: `API request failed: ${error instanceof Error ? error.message : String(error)}`
-        }],
-        isError: true
-      }
-    };
-  }
-}
-
-async function handleGetPersonDetails(personId: string) {
-  const credentials = getApiCredentials();
-  const url = new URL(`https://api.ancestry.com/v2/persons/${personId}`);
-
-  try {
-    const response = await fetch(url.toString(), {
-      headers: {
-        "Authorization": `Bearer ${credentials.key}`,
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await response.json() as PersonDetailsResponse;
-
-    if (!data.success) {
-      return {
-        toolResult: {
-          content: [{
-            type: "text",
-            text: `Failed to get person details: ${data.error || 'Unknown error'}`
+            text: `API request failed: ${data.errors.map(e => e.message).join(", ")}`
           }],
           isError: true
         }
@@ -398,7 +164,7 @@ async function handleGetPersonDetails(personId: string) {
 // Server setup
 const server = new Server(
   {
-    name: "mcp-server/ancestry",
+    name: "mcp-server/familysearch-ancestry",
     version: "0.1.0",
   },
   {
@@ -410,40 +176,20 @@ const server = new Server(
 
 // Set up request handlers
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: ANCESTRY_TOOLS,
+  tools: FAMILYSEARCH_TOOLS,
 }));
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
     switch (request.params.name) {
-      case "ancestry_search_records": {
-        const { query, category, year, location } = request.params.arguments as {
-          query: string;
-          category?: string;
-          year?: number;
-          location?: string;
+      case "familysearch_get_ancestry": {
+        const { person, spouse, personDetails, generations } = request.params.arguments as {
+          person: string;
+          spouse?: string;
+          personDetails?: boolean;
+          generations?: number;
         };
-        return await handleSearchRecords(query, category, year, location);
-      }
-      
-      case "ancestry_get_record_details": {
-        const { record_id } = request.params.arguments as { record_id: string };
-        return await handleGetRecordDetails(record_id);
-      }
-      
-      case "ancestry_search_family_trees": {
-        const { name, birth_year, death_year, location } = request.params.arguments as {
-          name: string;
-          birth_year?: number;
-          death_year?: number;
-          location?: string;
-        };
-        return await handleSearchFamilyTrees(name, birth_year, death_year, location);
-      }
-      
-      case "ancestry_get_person_details": {
-        const { person_id } = request.params.arguments as { person_id: string };
-        return await handleGetPersonDetails(person_id);
+        return await handleGetAncestry(person, spouse, personDetails, generations);
       }
       
       default:
@@ -473,7 +219,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function runServer() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Ancestry.com MCP Server running on stdio");
+  console.error("FamilySearch Ancestry MCP Server running on stdio");
 }
 
 runServer().catch((error) => {
