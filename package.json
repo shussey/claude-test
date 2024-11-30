@@ -1,0 +1,22 @@
+{
+  "name": "@shussey/claude-test",
+  "private": true,
+  "version": "0.5.1",
+  "description": "claude-test",
+  "license": "MIT",
+  "author": "Me",
+  "type": "module",
+  "workspaces": [
+    "src/*"
+  ],
+  "files": [],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "watch": "npm run watch --workspaces",
+    "publish-all": "npm publish --workspaces --access public",
+    "link-all": "npm link --workspaces"
+  },
+  "dependencies": {
+    "@shussey/marketstack": "*"
+  }
+}
