@@ -1,5 +1,5 @@
 {
-  "name": "@modelcontextprotocol/server-marketstack",
+  "name": "@shussey/marketstack",
   "version": "0.1.0",
   "description": "MCP Server for Marketstack API",
   "main": "index.js",
@@ -18,6 +18,6 @@
     "typescript": "^4.9.0"
   },
   "bin": {
-    "mcp-server-marketstack": "./dist/index.js"
+    "marketstack": "./dist/index.js"
   }
 }
