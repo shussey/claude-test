@@ -73,7 +73,7 @@ Add the following to your `claude_desktop_config.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-marketstack"
+        "@shussey/marketstack"
       ],
       "env": {
         "MARKETSTACK_API_KEY": "<YOUR_API_KEY>"
