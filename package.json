@@ -1,6 +1,5 @@
 {
   "name": "@shussey/claude-test",
-  "private": true,
   "version": "0.5.1",
   "description": "claude-test",
   "license": "MIT",
