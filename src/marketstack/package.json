@@ -10,7 +10,7 @@
     "dev": "tsc -w"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.1.0",
+    "@modelcontextprotocol/sdk": "^1.0.1",
     "node-fetch": "^3.3.0"
   },
   "devDependencies": {
