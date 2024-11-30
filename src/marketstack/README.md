@@ -2,31 +2,16 @@
 
 MCP Server implementation for the Marketstack API's End-of-Day (EOD) stock data endpoint.
 
-## Tool
+## Tools
 
-`marketstack_eod`
+1. `marketstack_eod`
 - Get End-of-Day (EOD) stock data
 - Inputs:
   - `symbol` (required): Stock symbol (e.g., "AAPL")
   - `date_from` (optional): Start date (YYYY-MM-DD)
   - `date_to` (optional): End date (YYYY-MM-DD)
   - `limit` (optional): Number of results per page (default: 100)
-- Returns:
-  - open: Opening price
-  - high: Highest price of the day
-  - low: Lowest price of the day
-  - close: Closing price
-  - volume: Trading volume
-  - adj_high: Adjusted highest price
-  - adj_low: Adjusted lowest price
-  - adj_close: Adjusted closing price
-  - adj_open: Adjusted opening price
-  - adj_volume: Adjusted volume
-  - split_factor: Stock split factor
-  - dividend: Dividend amount
-  - symbol: Stock symbol
-  - exchange: Exchange identifier
-  - date: Trading date
+- Returns: open, high, low, close volume, adj_high, adj_low, adj_close, adj_open, adj_volume, split_factor, dividend, symbol, exchange, date
 
 ## Example Usage
 
