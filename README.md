@@ -1,5 +1,5 @@
 # Marketstack MCP Server experiment
-This was a fun test for someone like me with limited to zero coding experience.
+This uses Claude Desktop and the recently published Anthropic Model Context Protocol. https://github.com/modelcontextprotocol . This was a fun test for someone like me with limited to zero coding experience.
 1. Install Claude desktop
 2. Set up Claude to use Brave MCP server so it can access the internet https://github.com/modelcontextprotocol/servers/blob/main/src/brave-search/README.md
 4. Ask Claude for a list of interesting web accessible services that are free and have an API. I selected Marketwatch and registered to get my API key
