@@ -90,7 +90,7 @@ This is an implementation of a Model Context Protocol (MCP) server that gives Cl
          "command": "npx",
          "args": [
            "-y",
-           "@modelcontextprotocol/server-marketstack"
+           "@shussey/marketstack"
          ],
          "env": {
            "MARKETSTACK_API_KEY": "<YOUR_API_KEY>"
