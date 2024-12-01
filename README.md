@@ -55,33 +55,10 @@ This is an implementation of a Model Context Protocol (MCP) server that gives Cl
 ## Getting Started
 
 ### Prerequisites
-
-1. [Claude Desktop](https://github.com/anthropic-labs/claude-desktop)
-2. A Marketstack API key (get one at [marketstack.com/signup](https://marketstack.com/signup))
-3. Node.js and npm installed
-4. Basic familiarity with Git and GitHub
-
-### Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/shussey/claude-test.git
-   cd claude-test
-   ```
-
-2. Install dependencies:
-   ```bash
-   cd src/marketstack
-   npm install
-   ```
-
-3. Build the project:
-   ```bash
-   npm run build
-   ```
+A Marketstack API key (get one at [marketstack.com/signup](https://marketstack.com/signup))
 
 ### Configuration
-
+Steps to set up Claude for MCP servers in general are [here](https://modelcontextprotocol.io/quickstart#prerequisites)
 1. Add the server configuration to your `claude_desktop_config.json`:
    ```json
    {
