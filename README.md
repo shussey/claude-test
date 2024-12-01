@@ -1,26 +1,61 @@
-# Marketstack MCP Server for Claude
+# Learning to Build with Claude - A Journey from Zero to MCP Server
 
-An implementation of a Model Context Protocol (MCP) server for accessing stock market data through the Marketstack API. This project was created with assistance from Claude AI as an experiment in extending AI capabilities through MCP.
+This project documents my journey of creating a stock market data server with minimal coding experience, using Claude AI as my guide. It demonstrates how AI can help bridge the gap between having an idea and implementing it, even for those just starting their coding journey.
 
-## Overview
+## The Journey
 
-This repository contains an MCP server that allows Claude to fetch End-of-Day (EOD) stock data using the Marketstack API. It demonstrates how to extend Claude's capabilities using the Anthropic Model Context Protocol.
+Here's how this project came to life, step by step:
 
-## Features
+1. **Getting Started with Claude**
+   - Installed Claude Desktop
+   - Set up the Brave MCP server to give Claude internet access
+   - Asked Claude to suggest interesting, free APIs we could work with
+
+2. **Choosing and Understanding the API**
+   - Explored various options Claude suggested
+   - Selected Marketstack for its simplicity and free tier
+   - Registered to get an API key
+
+3. **Learning the Development Process**
+   - Set up Git MCP server integration to manage code
+   - Created this repository as a blank canvas
+   - Asked Claude to examine Marketstack's API documentation
+   - Used Google Maps MCP server as a reference implementation
+
+4. **Building and Learning**
+   - Learned about NPM and basic package management
+   - Discovered how to install dependencies and build TypeScript projects
+   - Used GitHub Desktop and VSCode for basic file management
+   - Fixed issues by describing symptoms to Claude
+
+5. **The Result**
+   - Successfully created a working MCP server
+   - Can now ask Claude about stock data!
+   - Gained practical experience with modern development tools
+
+The most exciting realization: When an AI can help extend its own capabilities through APIs, we're witnessing a transformative moment in technology accessibility.
+
+## About This Project
+
+This is an implementation of a Model Context Protocol (MCP) server that gives Claude access to stock market data through the Marketstack API. It demonstrates how to extend Claude's capabilities using the Anthropic Model Context Protocol.
+
+### Features
 
 - Fetch End-of-Day (EOD) stock data for any symbol
 - Historical data access with date range filtering
 - Detailed stock information including prices, volumes, and adjustments
 - Error handling and rate limit management
 
-## Prerequisites
+## Getting Started
+
+### Prerequisites
 
 1. [Claude Desktop](https://github.com/anthropic-labs/claude-desktop)
 2. A Marketstack API key (get one at [marketstack.com/signup](https://marketstack.com/signup))
 3. Node.js and npm installed
 4. Basic familiarity with Git and GitHub
 
-## Installation
+### Installation
 
 1. Clone this repository:
    ```bash
@@ -39,7 +74,7 @@ This repository contains an MCP server that allows Claude to fetch End-of-Day (E
    npm run build
    ```
 
-## Configuration
+### Configuration
 
 1. Add the server configuration to your `claude_desktop_config.json`:
    ```json
@@ -69,18 +104,6 @@ Once configured, you can ask Claude questions about stock data, such as:
 - "Get the highest price for MSFT in January 2024"
 
 Claude will use this MCP server to fetch the relevant data and provide you with the information.
-
-## Project Creation Journey
-
-This project was created by someone with limited coding experience, demonstrating the power of AI assistance in development. Here's how it was built:
-
-1. Set up Claude Desktop with the Brave MCP server for internet access
-2. Used Claude to explore potential API services and selected Marketstack
-3. Set up Git MCP server integration
-4. Created repository structure with Claude's guidance
-5. Implemented the Marketstack API integration using the Google Maps MCP server as a reference
-6. Used GitHub Desktop and VSCode for manual adjustments
-7. Learned npm basics for package management and building
 
 ## Technical Details
 
