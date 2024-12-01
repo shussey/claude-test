@@ -1,6 +1,6 @@
 # Learning to Build with Claude - A Journey from Zero to MCP Server
 
-This repository is an impementation of a [Model Context Protocol](https://github.com/modelcontextprotocol) server but that isnt the point. The point is how little I had to do to make this and then use it.
+This repository is an impementation of a [Model Context Protocol](https://github.com/modelcontextprotocol) server but that isnt the thing to focus on. The point is how little I had to know and do to make this and then use it.
 \
 \
 The following documents my journey of creating a stock market MCP server with minimal coding experience and almost no actual coding, using Claude AI as my guide. From learning MCP had been published by Anthropic to having this working server was about 2 hours with some of that just playing with Claude which I hadnt used before. 
