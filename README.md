@@ -1,6 +1,12 @@
 # Learning to Build with Claude - A Journey from Zero to MCP Server
 
-This project documents my journey of creating a stock market data server with minimal coding experience, using Claude AI as my guide. From learning MCP had been published by Anthropic to having this working server was about 2 hours with some of that just playing with Claude which I hadnt used before. It demonstrates how AI can help bridge the gap between having an idea and implementing it, even for those just starting their coding journey.
+This repository is an impementation of a [Model Context Protocol](https://github.com/modelcontextprotocol) server but that isnt the point. The point is how little I had to do to make this and then use it.
+\
+\
+The following documents my journey of creating a stock market MCP server with minimal coding experience and almost no actual coding, using Claude AI as my guide. From learning MCP had been published by Anthropic to having this working server was about 2 hours with some of that just playing with Claude which I hadnt used before. 
+\
+\
+It demonstrates how AI can help bridge the gap between having an idea and implementing it, even for those just starting their coding journey.
 \
 \
 NOTE: I didnt read the [Marketstack](https://marketstack.com/) API documentation. I didnt read the MCP sample code, except at the end when I had some problems getting Claude Desktop to load the new server. And even then it wasnt a code problem. It was a formatting issue in the Returns section of the README.md
@@ -10,10 +16,10 @@ NOTE: I didnt read the [Marketstack](https://marketstack.com/) API documentation
 Here's how this project came to life, step by step:
 
 1. **Getting Started with Claude**
-   - Installed Claude Desktop on my Mac
-   - Set up the [Brave MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search) to give Claude internet access
+   - I installed Claude Desktop on my Mac
+   - I set up the [Brave MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search) to give Claude internet access
 
-2. **Choosing and Understanding the API**
+2. **Choosing and Understanding the Stock API**
    - I asked Claude to suggest interesting, free APIs I could work with
    - I explored various options Claude suggested and selected [Marketstack](https://marketstack.com/) for its simplicity and free tier
    - I went to their site and registered to get an API key
@@ -24,8 +30,7 @@ Here's how this project came to life, step by step:
    - I asked Claude to examine [Marketstack's API documentation](https://marketstack.com/documentation) and to use [Google Maps MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/google-maps) as a reference for creating the new MCP server in my repository
 
 5. **My manual steps building and learning**
-   - I used Claude to learn about NPM and basic package management
-   - I used Claude to learn how to install dependencies and build TypeScript projects
+   - I used Claude to learn how to install dependencies, build Node projects and how to publish them to npmjs.com
    - I used GitHub Desktop and VSCode for basic file management of what Claude was creating and for running the commands I learned
    - I fixed issues by describing symptoms to Claude
 
