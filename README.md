@@ -55,7 +55,7 @@ This is an implementation of a Model Context Protocol (MCP) server that gives Cl
 ## Getting Started
 
 ### Prerequisites
-A Marketstack API key (get one at [marketstack.com/signup](https://marketstack.com/signup))
+A Marketstack API key (get one at [marketstack.com/signup](https://marketstack.com/signup) . Free works fine but it will ask for a credit card.
 
 ### Configuration
 Steps to set up Claude for MCP servers in general are [here](https://modelcontextprotocol.io/quickstart#prerequisites)
