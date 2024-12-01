@@ -13,7 +13,7 @@ NOTE: I didnt read the [Marketstack](https://marketstack.com/) API documentation
 
 ## The Journey
 
-Here's how this project came to life, step by step:
+Here's how this project came to life. It isnt every step but gives you the main building blocks:
 
 1. **Getting Started with Claude**
    - I installed Claude Desktop on my Mac
@@ -27,7 +27,8 @@ Here's how this project came to life, step by step:
 4. **The Development Process**
    - I set up [Github MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/github) for Claude to manage code
    - I created this repository as a blank canvas (although I could have asked Claude to do it)
-   - I asked Claude to examine [Marketstack's API documentation](https://marketstack.com/documentation) and to use [Google Maps MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/google-maps) as a reference for creating the new MCP server in my repository
+   - I asked Claude "take a look at github modelcontextprotocol/servers at src/google-maps and let me know what you found"
+   - I asked Claude "using that as an example, i need you to create a similar mcp server that can use this API https://marketstack.com/documentation. Just do end of day quotes. Create it in repository shussey/claude-test"
 
 5. **My manual steps building and learning**
    - I used Claude to learn how to install dependencies, build Node projects and how to publish them to npmjs.com
