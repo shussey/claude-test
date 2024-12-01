@@ -106,8 +106,36 @@ This is an implementation of a Model Context Protocol (MCP) server that gives Cl
 
 Once configured, you can ask Claude questions about stock data, such as:
 - "What was Apple's stock price last week?"
-- "Show me Tesla's trading volume for the past month"
-- "Get the highest price for MSFT in January 2024"
+```
+I'll help you check Apple's stock price data from last week using the marketstack API.
+```
+```
+View Result from marketstack_eod from marketstack (local)
+{
+  `symbol`: `AAPL`,
+  `date_to`: `2024-11-30`,
+  `date_from`: `2024-11-24`
+}
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"pagination\": {\n    \"limit\": 100,\n    \"offset\": 0,\n    \"count\": 4,\n    \"total\": 4\n  },\n  \"data\": [\n    {\n      \"open\": 234.81,\n      \"high\": 237.81,\n      \"low\": 233.97,\n      \"close\": 237.33,\n      \"volume\": 28481400,\n      \"adj_high\": 237.81,\n      \"adj_low\": 233.97,\n      \"adj_close\": 237.33,\n      \"adj_open\": 234.81,\n      \"adj_volume\": 28481377,\n      \"split_factor\": 1,\n      \"dividend\": 0,\n      \"symbol\": \"AAPL\",\n      \"exchange\": \"XNAS\",\n      \"date\": \"2024-11-29T00:00:00+0000\"\n    },\n    {\n      \"open\": 234.465,\n      \"high\": 235.69,\n      \"low\": 233.8101,\n      \"close\": 234.93,\n      \"volume\": 33498439,\n      \"adj_high\": 235.69,\n      \"adj_low\": 233.8101,\n      \"adj_close\": 234.93,\n      \"adj_open\": 234.465,\n      \"adj_volume\": 33498439,\n      \"split_factor\": 1,\n      \"dividend\": 0,\n      \"symbol\": \"AAPL\",\n      \"exchange\": \"XNAS\",\n      \"date\": \"2024-11-27T00:00:00+0000\"\n    },\n    {\n      \"open\": 233.475,\n      \"high\": 235.57,\n      \"low\": 233.475,\n      \"close\": 235.06,\n      \"volume\": 44991117,\n      \"adj_high\": 235.57,\n      \"adj_low\": 233.33,\n      \"adj_close\": 235.06,\n      \"adj_open\": 233.33,\n      \"adj_volume\": 45986189,\n      \"split_factor\": 1,\n      \"dividend\": 0,\n      \"symbol\": \"AAPL\",\n      \"exchange\": \"XNAS\",\n      \"date\": \"2024-11-26T00:00:00+0000\"\n    },\n    {\n      \"open\": 231.46,\n      \"high\": 233.25,\n      \"low\": 229.74,\n      \"close\": 232.87,\n      \"volume\": 89984500,\n      \"adj_high\": 233.245,\n      \"adj_low\": 229.74,\n      \"adj_close\": 232.87,\n      \"adj_open\": 231.46,\n      \"adj_volume\": 90152832,\n      \"split_factor\": 1,\n      \"dividend\": 0,\n      \"symbol\": \"AAPL\",\n      \"exchange\": \"XNAS\",\n      \"date\": \"2024-11-25T00:00:00+0000\"\n    }\n  ]\n}"
+    }
+  ],
+  "isError": false
+}
+```
+```
+Based on the data, here's Apple's stock performance last week:
+
+- Monday (Nov 25): Opened at $231.46, closed at $232.87
+- Tuesday (Nov 26): Opened at $233.48, closed at $235.06
+- Wednesday (Nov 27): Opened at $234.47, closed at $234.93
+- Friday (Nov 29): Opened at $234.81, closed at $237.33
+
+The stock showed an overall upward trend through the week, with the highest close on Friday at $237.33. The lowest point was on Monday when it dipped to $229.74, while the highest point was reached on Friday at $237.81. Trading volume was notably high on Monday with about 90 million shares traded, then decreased through the week to around 28.5 million shares on Friday. Thursday was Thanksgiving, so the market was closed.
+```
 
 Claude will use this MCP server to fetch the relevant data and provide you with the information.
 
